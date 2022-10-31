@@ -1,14 +1,18 @@
 <template>
+<Navbar/>
+
   <img alt="Vue logo" src="./assets/logo.png">
   <router-view/>
 </template>
 
 <script>
+import { defineAsyncComponent } from '@vue/runtime-core'
 
 export default {
   name: 'App',
   components: {
-  
+    Navbar: defineAsyncComponent(() => import(/*webpackChunkName:"Navbar"*/'./modules/shared/pages/Navbar.vue'))
+   // De esta forma se carga el componente Navbar de forma asincrona
   }
 }
 </script>
