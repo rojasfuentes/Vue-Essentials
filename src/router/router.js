@@ -5,6 +5,7 @@ import About from "@/modules/pokemon/pages/About.vue";
 import PokemonPage from "@/modules/pokemon/pages/PokemonPage.vue";
  */
 import NotPageFound from "@/modules/shared/pages/NotPageFound.vue";
+import isAuthenticatedGuard from "./auth-guard";
 
 const routes = [
    
@@ -44,6 +45,7 @@ const routes = [
     {
         path: "/dbz",
         name: "dbz",
+        beforeEnter: [isAuthenticatedGuard()],
         component: () => import(/* webpackChunkName: "DbzLayout" */"@/modules/dbz/layouts/DBLayout.vue"),
         children: [
             {
@@ -95,6 +97,51 @@ const routes = [
 const router = createRouter({
     history: createWebHashHistory(),
     routes,
+});
+
+//Guard para proteger rutas
+//GUAD GLOBAL - SINCRONO
+
+//to - ruta a la que se quiere ir
+//from - ruta de donde viene
+//next - función que se ejecuta para continuar con la navegación
+
+
+//NO OCUPAMOS ESTE GUARD #######################################
+/* router.beforeEach((to, from, next) => {
+    console.log( { to, from, next });
+    
+    const random = Math.random() * 100;
+    if (random > 50) {
+        console.log("Acceso permitido");
+        next();
+    } else {
+        console.log("Acceso denegado");
+        next({ name: "pokemon-about" });
+    }
+});
+
+############################################### */
+
+const canAccess = () => {
+    return new Promise((resolve) => {
+        const random = Math.random() * 100;
+        if (random > 50) {
+            console.log("Acceso permitido");
+            resolve(true);
+        } else {
+            console.log("Acceso denegado");
+            resolve(false);
+        }
+    });
+};
+
+router.beforeEach(async (to, from, next) => {
+
+    const autorized = await canAccess();
+    autorized 
+    ? next() 
+    : next({ name: "pokemon-about" });
 });
 
 export default router;
